@@ -16,7 +16,7 @@ class ComplaintController extends Controller
      */
     public function index()
     {
-        $data = Complaint::all();
+        $data = Complaint::where('status', 'pending')->orderBy('created_at', 'desc')->get();
         return view('pages.complaints.index', [
             'data' => $data,
         ]);
@@ -41,21 +41,23 @@ class ComplaintController extends Controller
             'guest_telp' => 'nullable',
             'title' => 'required|string',
             'description' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ], [
             'guest_name.string' => 'Nama harus berupa string',
             'guest_email.email' => 'Email harus berupa email',
             'title.required' => 'Judul harus diisi',
             'description.required' => 'Deskripsi harus diisi',
             'description.max' => 'Deskripsi maksimal 255 karakter',
-            'image.image' => 'File harus berupa gambar',
             'image.mimes' => 'File harus berupa gambar dengan format jpeg, png, jpg, gif, atau svg',
             'image.max' => 'Ukuran file maksimal 2MB',
         ]);
 
         try {
             if ($request->image) {
-                $pathImage = $request->image->save('/public', '/photo');
+                $image = $request->file('image');
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
+                $imagePath = 'uploads/images';
+                $pathImage = $image->storeAs($imagePath, $imageName, 'public');
             }
 
             $data = [
@@ -74,9 +76,9 @@ class ComplaintController extends Controller
 
             Complaint::create($data);
 
-            return redirect()->route('complaints.index')->with('successMessage', 'Complaint berhasil dibuat');
+            return redirect()->route('complaints.create')->with('successMessage', 'Complaint berhasil dibuat');
         } catch (\Throwable $th) {
-            return redirect()->route('complaints.index')->with('errorMessage', 'Complaint tidak berhasil dibuat');
+            return redirect()->route('complaints.create')->with('errorMessage', 'Complaint tidak berhasil dibuat');
         }
     }
 

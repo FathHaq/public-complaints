@@ -5,13 +5,19 @@
 
 @section('content')
     <div class="container">
+        @if (session('errorMessage'))
+            <div class="alert alert-danger" role="alert">{{ session('errorMessage') }}</div>
+        @endif
+        @if (session('successMessage'))
+            <div class="alert alert-success" role="alert">{{ session('successMessage') }}</div>
+        @endif
         <div class="row">
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Tambah Pengaduan</h4>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('complaints.store') }}" method="POST">
+                    <form action="{{ route('complaints.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
                             <label for="nama">Nama Pelapor</label>
@@ -25,7 +31,7 @@
                         <x-inputs.basic-input label="Nomor Pelapor" id="no_telp" placeholder="Masukan Nomor Telepon"
                             name="guest_telp" />
                         @error('guest_telp')<span class="text-danger">{{ $message }}</span>@enderror
-                        <x-inputs.basic-input type="file" label="Photo complaint" id="photo" placeholder="Masukan Gambar Komplain-nya"
+                        <x-inputs.basic-input type="file" label="Photo complaint" id="image" placeholder="Masukan Gambar Komplain-nya"
                             name="image" />
                         @error('image')<span class="text-danger">{{ $message }}</span>@enderror
                         <x-inputs.basic-input label="Judul Pengaduan" id="title" placeholder="Masukan Judul"

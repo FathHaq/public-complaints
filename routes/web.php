@@ -17,6 +17,6 @@ Route::get('/complaints', [ComplaintController::class, 'index'])->name('complain
 Route::get('/complaints/create', [ComplaintController::class, 'create'])->name('complaints.create');
 Route::post('/complaints', [ComplaintController::class, 'store'])->name('complaints.store');
 
-Route::get('/response-complaints', [ComplaintResponseController::class, 'index'])->name('complaints.response.index');
-Route::get('/response-complaints/create', [ComplaintResponseController::class, 'create'])->name('complaints.response.create');
-Route::post('/response-complaints', [ComplaintResponseController::class, 'store'])->name('complaints.response.store');
+Route::get('/response-complaints', [ComplaintResponseController::class, 'index'])->name('complaints.response.index')->middleware('admin');
+Route::get('/response-complaints/create/{id}', [ComplaintResponseController::class, 'create'])->name('complaints.response.create')->middleware('admin');
+Route::post('/response-complaints/{id}', [ComplaintResponseController::class, 'store'])->name('complaints.response.store')->middleware('admin');
